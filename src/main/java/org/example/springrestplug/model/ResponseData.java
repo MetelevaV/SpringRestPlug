@@ -2,6 +2,9 @@ package org.example.springrestplug.model;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Data
 public class ResponseData {
 
@@ -9,9 +12,9 @@ public class ResponseData {
     private String password;
     private String date;
 
-    public ResponseData(String login, String password, String date) {
-        this.login = login;
-        this.password = password;
-        this.date = date;
+    public String getDate() {
+        LocalDateTime newDate = LocalDateTime.now();
+        this.date = newDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return date;
     }
 }
