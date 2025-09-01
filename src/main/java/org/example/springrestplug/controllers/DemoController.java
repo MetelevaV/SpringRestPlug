@@ -1,8 +1,15 @@
 package org.example.springrestplug.controllers;
 
+import jakarta.validation.Valid;
 import org.example.springrestplug.model.ResponseData;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class DemoController {
@@ -15,17 +22,29 @@ public class DemoController {
         }
     }
 
-
     @GetMapping("/getData")
-    public String returnLogin() {
+    public ResponseEntity<String> returnLogin() {
         addDelay();
-        return "{\"login\":\"Login1\",\"status\":\"ok\"}";
+        return ResponseEntity.ok("{\"login\":\"Login1\",\"status\":\"ok\"}");
     }
 
     @PostMapping(value = "/postData", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ResponseData> postData(@RequestBody ResponseData data) {
+    public ResponseEntity<ResponseData> postData(@Valid @RequestBody ResponseData data) {
         addDelay();
 
         return ResponseEntity.ok(data);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
