@@ -8,11 +8,15 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-public class DemoController {
+public class Controller {
+
+    private static final List<byte[]> memoryLeakList = new ArrayList<>();
 
     private void addDelay() {
         try {
@@ -33,6 +37,15 @@ public class DemoController {
         addDelay();
 
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/leak")
+    public ResponseEntity<String> leakMemory() {
+        addDelay();
+        byte[] leak = new byte[1024 * 1024];
+        memoryLeakList.add(leak);
+
+        return ResponseEntity.ok("Add new object: " + memoryLeakList.size());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
