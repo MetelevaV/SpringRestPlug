@@ -42,7 +42,7 @@ public class Controller {
     @GetMapping("/leak")
     public ResponseEntity<String> leakMemory() {
         addDelay();
-        byte[] leak = new byte[1024 * 1024];
+        byte[] leak = new byte[4];
         memoryLeakList.add(leak);
 
         return ResponseEntity.ok("Add new object: " + memoryLeakList.size());
