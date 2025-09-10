@@ -94,20 +94,20 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jolokia</groupId>
-            <artifactId>jolokia-server-core</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jolokia</groupId>
-            <artifactId>jolokia-service-jmx</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jolokia</groupId>
-            <artifactId>jolokia-service-serializer</artifactId>
-            <version>2.3.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jolokia</groupId>-->
+<!--            <artifactId>jolokia-server-core</artifactId>-->
+<!--            <version>2.3.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.jolokia</groupId>-->
+<!--            <artifactId>jolokia-service-jmx</artifactId>-->
+<!--            <version>2.3.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.jolokia</groupId>-->
+<!--            <artifactId>jolokia-service-serializer</artifactId>-->
+<!--            <version>2.3.0</version>-->
+<!--        </dependency>-->
     </dependencies>
 </project>
