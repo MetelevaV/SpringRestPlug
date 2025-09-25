@@ -1,7 +1,8 @@
 package org.example.springrestplug.controllers;
 
 import jakarta.validation.Valid;
-import org.example.springrestplug.model.ResponseData;
+import org.example.springrestplug.model.User;
+import org.example.springrestplug.repository.DataBaseWorker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,9 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/users")
 public class Controller {
 
     private static final List<byte[]> memoryLeakList = new ArrayList<>();
+    private final DataBaseWorker dbWorker = new DataBaseWorker();
 
     private void addDelay() {
         try {
@@ -26,17 +29,28 @@ public class Controller {
         }
     }
 
-    @GetMapping("/getData")
-    public ResponseEntity<String> returnLogin() {
-        addDelay();
-        return ResponseEntity.ok("{\"login\":\"Login1\",\"status\":\"ok\"}");
+    @GetMapping("/{login}")
+    public ResponseEntity<?> getUser(@PathVariable String login) {
+//        addDelay();
+        User user = dbWorker.getUserByLogin(login);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "User with login '" + login + "' not found"));
+        }
+        return ResponseEntity.ok(user);
     }
 
-    @PostMapping(value = "/postData", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ResponseData> postData(@Valid @RequestBody ResponseData data) {
-        addDelay();
+    @PostMapping(value = "/insertUser", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> insertUser(@Valid @RequestBody User user) {
+//        addDelay();
+        int rows = dbWorker.insertUser(user);
 
-        return ResponseEntity.ok(data);
+        if (rows == 0) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Insert failed"));
+        }
+
+        return ResponseEntity.ok(Map.of("rowsInserted", rows));
     }
 
     @GetMapping("/leak")
