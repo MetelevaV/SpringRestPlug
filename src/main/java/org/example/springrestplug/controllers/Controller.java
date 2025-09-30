@@ -35,6 +35,10 @@ public class Controller {
         addDelay();
         try {
             User user = dbWorker.getUserByLogin(login);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("error", "User with login '" + login + "' not found"));
+            }
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -47,6 +51,10 @@ public class Controller {
         addDelay();
         try {
             int rows = dbWorker.insertUser(user);
+            if (rows == 0) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("error", "Insert failed"));
+            }
             return ResponseEntity.ok(Map.of("rowsInserted", rows));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
