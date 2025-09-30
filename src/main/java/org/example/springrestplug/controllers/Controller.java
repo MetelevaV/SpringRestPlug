@@ -9,19 +9,15 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 public class Controller {
 
-    private static final List<byte[]> memoryLeakList = new ArrayList<>();
     private final DataBaseWorker dbWorker;
 
-    // внедрение через конструктор (Spring сам подставит бин)
     public Controller(DataBaseWorker dbWorker) {
         this.dbWorker = dbWorker;
     }
@@ -36,35 +32,26 @@ public class Controller {
 
     @GetMapping("/{login}")
     public ResponseEntity<?> getUser(@PathVariable String login) {
-//        addDelay();
-        User user = dbWorker.getUserByLogin(login);
-        if (user == null) {
+        addDelay();
+        try {
+            User user = dbWorker.getUserByLogin(login);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "User with login '" + login + "' not found"));
+                    .body(Map.of("error", "Database error: " + e.getMessage()));
         }
-        return ResponseEntity.ok(user);
     }
 
     @PostMapping(value = "/insertUser", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> insertUser(@Valid @RequestBody User user) {
         addDelay();
-        int rows = dbWorker.insertUser(user);
-
-        if (rows == 0) {
+        try {
+            int rows = dbWorker.insertUser(user);
+            return ResponseEntity.ok(Map.of("rowsInserted", rows));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Insert failed"));
+                    .body(Map.of("error", "Database error: " + e.getMessage()));
         }
-
-        return ResponseEntity.ok(Map.of("rowsInserted", rows));
-    }
-
-    @GetMapping("/leak")
-    public ResponseEntity<String> leakMemory() {
-        addDelay();
-        byte[] leak = new byte[4];
-        memoryLeakList.add(leak);
-
-        return ResponseEntity.ok("Add new object: " + memoryLeakList.size());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

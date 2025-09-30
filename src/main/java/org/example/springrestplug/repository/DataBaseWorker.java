@@ -1,6 +1,7 @@
 package org.example.springrestplug.repository;
 
 import org.example.springrestplug.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -11,11 +12,12 @@ import java.sql.*;
 public class DataBaseWorker {
     private final DataSource dataSource;
 
+    @Autowired
     public DataBaseWorker(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public User getUserByLogin(String login) {
+    public User getUserByLogin(String login) throws SQLException{
         User result = null;
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
@@ -33,13 +35,12 @@ public class DataBaseWorker {
                 );
             }
 
-        } catch (SQLException e) {
-            System.err.println("Ошибка соединения: " + e.getMessage());
         }
         return result;
+
     }
 
-    public int insertUser(User userObj) {
+    public int insertUser(User userObj) throws SQLException{
         String sqlCredentials = "INSERT INTO credentials(login, email) VALUES(?, ?)";
         String sqlAccounts = (userObj.getDate() != null)
                 ? "INSERT INTO accounts(login, password, date) VALUES(?, ?, ?)"
@@ -67,8 +68,6 @@ public class DataBaseWorker {
             conn.commit();
             rowsAffected = 1;
 
-        } catch (SQLException e) {
-            System.err.println("Ошибка: " + e.getMessage());
         }
         return rowsAffected;
     }
