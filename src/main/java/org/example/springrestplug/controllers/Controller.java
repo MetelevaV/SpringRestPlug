@@ -19,7 +19,12 @@ import java.util.Map;
 public class Controller {
 
     private static final List<byte[]> memoryLeakList = new ArrayList<>();
-    private final DataBaseWorker dbWorker = new DataBaseWorker();
+    private final DataBaseWorker dbWorker;
+
+    // внедрение через конструктор (Spring сам подставит бин)
+    public Controller(DataBaseWorker dbWorker) {
+        this.dbWorker = dbWorker;
+    }
 
     private void addDelay() {
         try {
@@ -42,7 +47,7 @@ public class Controller {
 
     @PostMapping(value = "/insertUser", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> insertUser(@Valid @RequestBody User user) {
-//        addDelay();
+        addDelay();
         int rows = dbWorker.insertUser(user);
 
         if (rows == 0) {
