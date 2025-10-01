@@ -1,5 +1,7 @@
 package org.example.springrestplug.repository;
 
+import org.example.springrestplug.exception.UserInsertException;
+import org.example.springrestplug.exception.UserNotFoundException;
 import org.example.springrestplug.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,7 +19,7 @@ public class DataBaseWorker {
         this.dataSource = dataSource;
     }
 
-    public User getUserByLogin(String login) throws SQLException{
+    public User getUserByLogin(String login) throws SQLException {
         User result = null;
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
@@ -27,26 +29,23 @@ public class DataBaseWorker {
                              "WHERE c.login = '" + login + "'")) {
 
             if (rs.next()) {
-                result = new User(
+                return new User(
                         rs.getString("login"),
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getTimestamp("date").toLocalDateTime()
                 );
+            } else {
+                throw new UserNotFoundException(login);
             }
-
         }
-        return result;
-
     }
 
-    public int insertUser(User userObj) throws SQLException{
+    public int insertUser(User userObj) throws SQLException {
         String sqlCredentials = "INSERT INTO credentials(login, email) VALUES(?, ?)";
         String sqlAccounts = (userObj.getDate() != null)
                 ? "INSERT INTO accounts(login, password, date) VALUES(?, ?, ?)"
                 : "INSERT INTO accounts(login, password, date) VALUES(?, ?, DEFAULT)";
-
-        int rowsAffected = 0;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps1 = conn.prepareStatement(sqlCredentials);
@@ -66,10 +65,11 @@ public class DataBaseWorker {
             ps2.executeUpdate();
 
             conn.commit();
-            rowsAffected = 1;
+            return 1;
 
+        } catch (SQLException e) {
+            throw new UserInsertException(e.getMessage());
         }
-        return rowsAffected;
     }
 
 }
