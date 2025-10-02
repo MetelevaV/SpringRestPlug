@@ -1,0 +1,10 @@
+{"login": "name1", "email": "user1@yandex.ru", "password": "pass1", "date": "2025-10-01T12:58:01"}
+{"login": "name2", "email": "user2@yandex.ru", "password": "pass2", "date": "2025-10-01T12:59:01"}
+{"login": "name3", "email": "user3@yandex.ru", "password": "pass3", "date": "2025-10-01T13:00:01"}
+{"login": "name4", "email": "user4@yandex.ru", "password": "pass4", "date": "2025-10-01T13:01:01"}
+{"login": "name5", "email": "user5@yandex.ru", "password": "pass5", "date": "2025-10-01T13:02:01"}
+{"login": "name6", "email": "user6@yandex.ru", "password": "pass6", "date": "2025-10-01T13:03:01"}
+{"login": "name7", "email": "user7@yandex.ru", "password": "pass7", "date": "2025-10-01T13:04:01"}
+{"login": "name8", "email": "user8@yandex.ru", "password": "pass8", "date": "2025-10-01T13:05:01"}
+{"login": "name9", "email": "user9@yandex.ru", "password": "pass9", "date": "2025-10-01T13:06:01"}
+{"login": "name10", "email": "user10@yandex.ru", "password": "pass10", "date": "2025-10-01T13:07:01"}
