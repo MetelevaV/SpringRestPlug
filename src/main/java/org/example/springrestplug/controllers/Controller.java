@@ -3,6 +3,7 @@ package org.example.springrestplug.controllers;
 import jakarta.validation.Valid;
 import org.example.springrestplug.model.User;
 import org.example.springrestplug.repository.DataBaseWorker;
+import org.example.springrestplug.repository.FileWorker;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,9 +18,11 @@ import java.util.Map;
 public class Controller {
 
     private final DataBaseWorker dbWorker;
+    private final FileWorker fileWorker;
 
-    public Controller(DataBaseWorker dbWorker) {
+    public Controller(DataBaseWorker dbWorker, FileWorker fileWorker) {
         this.dbWorker = dbWorker;
+        this.fileWorker = fileWorker;
     }
 
     private void addDelay() {
@@ -35,10 +38,23 @@ public class Controller {
         addDelay();
         try {
             User user = dbWorker.getUserByLogin(login);
+            fileWorker.writeUserToFile(user);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Database error: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/randomFileUser")
+    public ResponseEntity<?> getRandomFileUser() {
+        addDelay();
+        try {
+            String randomJson = fileWorker.readRandomFromFile();
+            return ResponseEntity.ok(randomJson);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "File error: " + e.getMessage()));
         }
     }
 

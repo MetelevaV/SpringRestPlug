@@ -1,0 +1,6 @@
+{
+  "login" : "login25",
+  "email" : "email25@mail.ru",
+  "password" : "password25",
+  "date" : "2025-09-16T14:57:16.083"
+}
