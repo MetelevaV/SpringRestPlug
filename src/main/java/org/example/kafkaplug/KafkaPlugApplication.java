@@ -1,13 +1,13 @@
-package org.example.springrestplug;
+package org.example.kafkaplug;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringRestPlugApplication {
+public class KafkaPlugApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringRestPlugApplication.class, args);
+        SpringApplication.run(KafkaPlugApplication.class, args);
     }
 
 }
